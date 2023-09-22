@@ -232,6 +232,13 @@ public:
 
     void sortList()
     {
+        if(*head ==NULL || (*head).next ==NULL)
+        {
+            return;
+        }
+
+        Node<T> *a = *head;
+        Node<T> *b = NULL;
 
     }
 
@@ -255,9 +262,21 @@ public:
 
     void reverseList()
     {
+        Node<T> *temp = NULL;
+        Node<T> *current = head;
+        while(current != NULL)
+        {
+            temp = current->prev;
+            current->prev = current->next;
+            current->next = temp;
+            current= current->prev;
+        }
 
+        if(temp != NULL)
+        {
+            head = temp->prev;
+        }
     }
-
 };
 
 // Main Program
@@ -381,9 +400,11 @@ int main() {
                 cout <<"Your new linked list after delete is: \n";
                 ll->printList();
                 isQuit = false;
-
                 break;
             case 9:
+                ll->reverseList();
+                cout <<"Your new linked list after reverse is: \n";
+                ll->printList();
                 break;
             case 10:
                 break;
