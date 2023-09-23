@@ -229,16 +229,30 @@ public:
         length--;
     }
 
-
+// Using Bubble sort
     void sortList()
     {
-        if(*head ==NULL || (*head).next ==NULL)
-        {
-            return;
-        }
+        bool swapped;
+        Node<T> *nodeA;
+        Node<T> *nodeB = NULL;
 
-        Node<T> *a = *head;
-        Node<T> *b = NULL;
+        if(head == NULL)
+            return;
+
+        do {
+            swapped = false;
+            nodeA = head;
+            while(nodeA -> next != nodeB)
+            {
+                if(nodeA->value > nodeA->next->value)
+                {
+                    swap(nodeA->value, nodeA->next->value);
+                    swapped = true;
+                }
+                nodeA = nodeA->next;
+            }
+            nodeB = nodeA;
+        }while(swapped);
 
     }
 
@@ -247,11 +261,25 @@ public:
 
     }
 
-    int countMultiples(T value)
-    {
+    int countMultiples(T value) {
         int num;
+        Node<T> *nodeA;
 
-
+        if (head == NULL) {
+            cout << "\nEmpty List\n";
+        }
+        else
+        {
+            nodeA = head;
+            while (nodeA != NULL)
+            {
+                if(nodeA->value == nodeA->next->value)
+                {
+                    num +=1;
+                }
+                nodeA = nodeA->next;
+            }
+        }
         return num;
     }
 
@@ -407,8 +435,17 @@ int main() {
                 ll->printList();
                 break;
             case 10:
+                ll->sortList();
+                cout <<"Your new linked list after sort is: \n";
+                ll->printList();
                 break;
             case 11:
+                int count;
+
+                count = ll->countMultiples(temp(value,name));
+                cout <<"The value appear: " << count << " times.\n";
+
+
                 break;
             case 12:
                 break;
