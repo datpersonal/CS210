@@ -11,6 +11,16 @@ public:
         this->value = value;
         this->name = name;
     }
+
+
+    string getName()
+    {
+        return name;
+    }
+    int getValue()
+    {
+        return value;
+    }
     void print() {
         cout << "["<< value << ", " << name << "] ";
     }
@@ -232,31 +242,26 @@ public:
 // Using Bubble sort
     void sortList()
     {
-        bool swapped;
-        Node<T> *nodeA;
-        Node<T> *nodeB = NULL;
-        //check if list is empty
-        if(head == NULL)
+        Node<T> *NodeA= head;
+        Node<T> *NodeB = NULL;
+        int swapped;
+        do
         {
-            cout << "Empty List\n";
-            exit(1);
-        };
-        //Goes through the list and swap the node base on their int value.
-        do {
-            swapped = false;
-            nodeA = head;
-            while(nodeA -> next != nodeB)
-            {
-                if(nodeA->value > nodeA->next->value)
-                {
-                    swap(nodeA->value, nodeA->next->value);
-                    swapped = true;
-                }
-                nodeA = nodeA->next;
-            }
-            nodeB = nodeA;
-        }while(swapped);
+            swapped = 0;
+            NodeA = head;
 
+            while (NodeA->next != NodeB)
+            {
+                if (NodeA->value->getValue() > NodeA->next->value->getValue())
+                {
+                    swap(NodeA->value, NodeA->next->value);
+                    swapped = 1;
+                }
+                NodeA = NodeA->next;
+            }
+            NodeB = NodeA;
+        }
+        while (swapped);
     }
 
     void removeMultiplies()
@@ -267,8 +272,6 @@ public:
     int countMultiples(T *value) {
         int num = 0;
         Node<T> *checkNode = new Node<T> (value);// node hold value to check
-
-
         if (head == NULL)
         {
             cout << "\nEmpty List\n";
@@ -278,10 +281,10 @@ public:
             Node<T> *tempNode = head;
                 while (tempNode != NULL)
                 {
-                    if(checkNode->value == tempNode->value)
+
+                    if((checkNode->value->getValue()) == (tempNode->value->getValue()) && (checkNode->value->getName()) == (tempNode->value->getName()))
                     {
                         num +=1;
-                        break;
                     }
                     tempNode = tempNode->next; // go0 to next value
                 }
@@ -292,23 +295,7 @@ public:
 
     void evenOddSplit()
     {
-        Node<T> *even = head;
-        Node<T> *odd = head->next;
-        Node<T> *oddHead = head->next;
 
-
-        while(even !=NULL && even->next != NULL)
-        {
-
-            even->next = even ->next ->next;
-            even = even->next;
-            even->print();
-
-
-            odd->next = odd ->next ->next;
-            odd = odd->next;
-            odd->print();
-        }
 
 
 
