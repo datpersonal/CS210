@@ -12,9 +12,9 @@ public:
         this->name = name;
     }
     void print() {
-
         cout << "["<< value << ", " << name << "] ";
     }
+
 };
 
 // Node Class : Node for the LinkedList
@@ -235,10 +235,13 @@ public:
         bool swapped;
         Node<T> *nodeA;
         Node<T> *nodeB = NULL;
-
+        //check if list is empty
         if(head == NULL)
-            return;
-
+        {
+            cout << "Empty List\n";
+            exit(1);
+        };
+        //Goes through the list and swap the node base on their int value.
         do {
             swapped = false;
             nodeA = head;
@@ -261,32 +264,56 @@ public:
 
     }
 
-    int countMultiples(T value) {
-        int num;
-        Node<T> *nodeA;
+    int countMultiples(T *value) {
+        int num = 0;
+        Node<T> *checkNode = new Node<T> (value);// node hold value to check
 
-        if (head == NULL) {
+
+        if (head == NULL)
+        {
             cout << "\nEmpty List\n";
         }
         else
         {
-            nodeA = head;
-            while (nodeA != NULL)
-            {
-                if(nodeA->value == nodeA->next->value)
+            Node<T> *tempNode = head;
+                while (tempNode != NULL)
                 {
-                    num +=1;
+                    if(checkNode->value == tempNode->value)
+                    {
+                        num +=1;
+                        break;
+                    }
+                    tempNode = tempNode->next; // go0 to next value
                 }
-                nodeA = nodeA->next;
-            }
         }
         return num;
     }
 
+
     void evenOddSplit()
     {
+        Node<T> *even = head;
+        Node<T> *odd = head->next;
+        Node<T> *oddHead = head->next;
+
+
+        while(even !=NULL && even->next != NULL)
+        {
+
+            even->next = even ->next ->next;
+            even = even->next;
+            even->print();
+
+
+            odd->next = odd ->next ->next;
+            odd = odd->next;
+            odd->print();
+        }
+
+
 
     }
+
 
     void reverseList()
     {
@@ -307,47 +334,60 @@ public:
     }
 };
 
+
+void menuDisplay()
+{
+    //Display Menu
+    cout <<"\n=========================================\n";
+    cout << "\nWelcome to Dat's Doubly linked list menu!" << endl;
+    cout << "Please read the option: " << endl;
+    cout << "a. Create a list" << endl;
+    cout << "b. Delete a list" << endl;
+    cout << "c. Insert at Head" << endl;
+    cout << "d. Insert at Tail" << endl;
+    cout << "e. Insert at Index" << endl;
+    cout << "f. Delete at Head" << endl;
+    cout << "g. Delete at Tail" << endl;
+    cout << "h. Delete at Index" << endl;
+    cout << "j. Reverse List" << endl;
+    cout << "k. Sort List" << endl;
+    cout << "l. Count Multiples" << endl;
+    cout << "m. Delete Multiples" << endl;
+    cout << "n. Split List Even Odd" << endl;
+    cout << "q. Exit" << endl;
+    cout << "Please choose the option above:\n";
+};
+
+
+
 // Main Program
 
 int main() {
  //initialize variables
-    int choice = 0;
+    char choice;
     int value;
     string name;
     int index;
+    int count =0;
     Data *temp;
     bool isQuit = false;
    // Calling operations on Linked List
     DoubleLinkedList<Data> *ll;
-    DoubleLinkedList<Data> *ll1; //hold odd value
-    DoubleLinkedList<Data> *ll2; // hold even value
+
+    // display menu
+
 
     do {
-
-        //Display Menu
-        cout <<"\n=========================================\n";
-        cout << "\nWelcome to Dat's Doubly linked list menu!" << endl;
-        cout << "Please read the option: " << endl;
-        cout << "1. Create a list" << endl;
-        cout << "2. Delete a list" << endl;
-        cout << "3. Insert at Head" << endl;
-        cout << "4. Insert at Tail" << endl;
-        cout << "5. Insert at Index" << endl;
-        cout << "6. Delete at Head" << endl;
-        cout << "7. Delete at Tail" << endl;
-        cout << "8. Delete at Index" << endl;
-        cout << "9. Reverse List" << endl;
-        cout << "10. Sort List" << endl;
-        cout << "11. Count Multiples" << endl;
-        cout << "12. Delete Multiples" << endl;
-        cout << "13. Split List Even Odd" << endl;
-        cout << "14. Exit" << endl;
-        cout << "Please choose the option above:\n";
-        //Take the choice using switch case
+        menuDisplay();
         cin >> choice;
+        while((choice > 'z' && choice >'Z') || (choice < 'a' && choice < 'A'))
+        {
+            cout <<"That is invalid input.\nPlease enter your choice:\n";
+            cin >> choice;
+        }
         cout <<"=========================================\n";
-        switch (choice) {
-            case 1:
+        switch (toupper(choice)) {
+            case 'A':
                 cout << "Please enter the string value of the node: \n";
                 cin >> name;
                 cout << "Please enter the integer value of the node: \n";
@@ -360,11 +400,11 @@ int main() {
                 isQuit = false;
                 break;
 
-            case 2:
+            case 'B':
 
                 isQuit = false;
                  break;
-            case 3:
+            case 'C':
                 cout << "Please enter the string value of the node: \n";
                 cin >> name;
                 cout << "Please enter the integer value of the node: \n";
@@ -374,7 +414,7 @@ int main() {
                 ll->printList();
                 isQuit = false;
                 break;
-            case 4:
+            case 'D':
                 cout << "Please enter the string value of the node: \n";
                 cin >> name;
                 cout << "Please enter the integer value of the node: \n";
@@ -385,14 +425,16 @@ int main() {
                 ll->printList();
                 isQuit = false;
                 break;
-            case 5:
+            case 'E':
                 cout << "Please enter the string value of the node: \n";
                 cin >> name;
                 cout << "Please enter the integer value of the node: \n";
                 cin >> value;
                 cout << "Please enter the index you want to insert at: \n";
                 cin >> index;
-                while(index > ll->getLength())
+                cout <<"This is the list before add new node: \n";
+                ll->printList();
+                while(index > ll->getLength()|| index < 0)
                 {
                     cout << "Please enter correct index you want to insert at: \n";
                     cin >> index;
@@ -403,23 +445,23 @@ int main() {
                 ll->printList();
                 isQuit = false;
                 break;
-            case 6:
+            case 'F':
                 ll->deleteAtHead();
                 cout <<"Your new linked list after delete is: \n";
                 ll->printList();
                 isQuit = false;
                 break;
                 break;
-            case 7:
+            case 'G':
                 ll->deleteAtTail();
                 cout <<"Your new linked list after delete is: \n";
                 ll->printList();
                 isQuit = false;
                 break;
-            case 8:
+            case 'H':
                 cout <<"Please enter the the index you want to delete at:\n";
                 cin >> index;
-                while(index > ll->getLength())
+                while(index > ll->getLength()||index < 0)
                 {
                     cout << "Please enter correct index you want to insert at: \n";
                     cin >> index;
@@ -429,34 +471,41 @@ int main() {
                 ll->printList();
                 isQuit = false;
                 break;
-            case 9:
+            case 'J':
                 ll->reverseList();
                 cout <<"Your new linked list after reverse is: \n";
                 ll->printList();
+                isQuit = false;
                 break;
-            case 10:
+            case 'K':
                 ll->sortList();
                 cout <<"Your new linked list after sort is: \n";
                 ll->printList();
+                isQuit = false;
                 break;
-            case 11:
-                int count;
+            case 'L':
 
-                count = ll->countMultiples(temp(value,name));
-                cout <<"The value appear: " << count << " times.\n";
+                cout <<"Enter the integer value: \n";
+                cin >> value;
+                cout <<"Enter the string value:\n";
+                cin >> name;
+                temp = new Data(value,name);
+                count = ll->countMultiples(temp);
+                ll->printList();
+                cout << "\nThe value of [" << value << "," << name << "] appeared " << count  << " times.\n";
+                isQuit = false;
+                break;
 
+            case 'M':
 
                 break;
-            case 12:
+            case 'N':
+                    ll->evenOddSplit();
+
                 break;
-            case 13:
-                break;
-            case 14:
+            case 'Q':
                 isQuit = true;
                 break;
-            default:
-                cout << "It is an invalid choice." << endl;
-                isQuit = false;
         }
     }while(!isQuit);
 
