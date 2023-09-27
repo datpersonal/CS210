@@ -266,27 +266,60 @@ public:
 
     void removeMultiplies()
     {
+            Node<T> *NodeA;
+            Node<T> *NodeB;
+            Node<T> *temp;
+
+            NodeA = head;
+            while(NodeA != nullptr && NodeA->next !=nullptr)
+            {
+                NodeB = NodeA;
+                while(NodeB->next != nullptr)
+                {
+                    if((NodeA->value->getValue() == NodeB->next->value->getValue()) &&(NodeA->value->getName() == NodeB->next->value->getName()))
+                    {
+                        temp = NodeB->next;
+                        NodeB->next = NodeB->next->next;
+                        delete temp;
+                        length--;
+                    }
+                    else
+                    {
+                        NodeB = NodeB->next;
+                    }
+                }
+                NodeA = NodeA->next;
+            }
 
     }
 
     int countMultiples(T *value) {
         int num = 0;
+        int intValA, intValB;
+        string strValA, strValB;
         Node<T> *checkNode = new Node<T> (value);// node hold value to check
-        if (head == NULL)
+        if (head == nullptr)
         {
             cout << "\nEmpty List\n";
         }
         else
         {
             Node<T> *tempNode = head;
-                while (tempNode != NULL)
-                {
 
-                    if((checkNode->value->getValue()) == (tempNode->value->getValue()) && (checkNode->value->getName()) == (tempNode->value->getName()))
+                while (tempNode != nullptr)
+                {
+                    //get values in check Node
+                    intValA = checkNode->value->getValue();
+                    strValA = checkNode ->value ->getName();
+                    //get value in temp Node to compare
+                    intValB = tempNode->value->getValue();
+                    strValB = tempNode -> value -> getName();
+
+                    if((intValA == intValB) && (strValA == strValB))
                     {
                         num +=1;
                     }
-                    tempNode = tempNode->next; // go0 to next value
+                    tempNode = tempNode->next; // go to next value
                 }
         }
         return num;
@@ -295,18 +328,64 @@ public:
 
     void evenOddSplit()
     {
+        Node <T> *evenHead = head;
+        Node<T> *oddHead = head-> next;
+
+        DoubleLinkedList<Data> *evenList = new DoubleLinkedList<Data> (evenHead->value);
+        DoubleLinkedList<Data> *oddList = new DoubleLinkedList<Data> (oddHead->value);
+        while(evenHead->next != nullptr || oddHead ->next != nullptr)
+        {
+            // evenHead start at node 0  and this will go to node 2 by skipping 1
+            evenHead->next = evenHead->next->next;
+            evenHead = evenHead->next;
+            //when the list hit the node near end
+            if(evenHead->next == nullptr)
+            {
+                evenList->append(evenHead->value);
+
+                break;
+            }
+            else
+            {
+                evenList->append(evenHead->value);
+
+            }
+
+            //this start from node [1] and go to node [3]
+            oddHead->next = oddHead->next->next;
+            oddHead = oddHead ->next;
+            if(oddHead -> next == nullptr)
+            {
+                oddList->append(oddHead->value);
+
+                break;
+            }
+            else
+            {
+                oddList->append(oddHead->value);
+            }
+        }
 
 
-
-
+        cout << "Odd List: \n";
+        oddList->printList();
+        cout << endl;
+        cout << "Even List:\n";
+        evenList->printList();
+        destroyList();
+    }
+    void destroyList()
+    {
+        head = nullptr;
+        tail = nullptr;
     }
 
 
     void reverseList()
     {
-        Node<T> *temp = NULL;
+        Node<T> *temp = nullptr;
         Node<T> *current = head;
-        while(current != NULL)
+        while(current != nullptr)
         {
             temp = current->prev;
             current->prev = current->next;
@@ -314,7 +393,7 @@ public:
             current= current->prev;
         }
 
-        if(temp != NULL)
+        if(temp != nullptr)
         {
             head = temp->prev;
         }
@@ -361,13 +440,14 @@ int main() {
    // Calling operations on Linked List
     DoubleLinkedList<Data> *ll;
 
+
     // display menu
 
 
     do {
         menuDisplay();
         cin >> choice;
-        while((choice > 'z' && choice >'Z') || (choice < 'a' && choice < 'A'))
+        while((choice > 'z' ) || (choice < 'a' ))
         {
             cout <<"That is invalid input.\nPlease enter your choice:\n";
             cin >> choice;
@@ -388,10 +468,15 @@ int main() {
                 break;
 
             case 'B':
-
-                isQuit = false;
-                 break;
+                ll->destroyList();
+                //test case to see if list is still appear:
+                ll->printList();
+                cout << "\nThe list is destroyed!\n";
+                isQuit = true;
+                break;
             case 'C':
+
+
                 cout << "Please enter the string value of the node: \n";
                 cin >> name;
                 cout << "Please enter the integer value of the node: \n";
@@ -402,6 +487,7 @@ int main() {
                 isQuit = false;
                 break;
             case 'D':
+
                 cout << "Please enter the string value of the node: \n";
                 cin >> name;
                 cout << "Please enter the integer value of the node: \n";
@@ -413,6 +499,7 @@ int main() {
                 isQuit = false;
                 break;
             case 'E':
+
                 cout << "Please enter the string value of the node: \n";
                 cin >> name;
                 cout << "Please enter the integer value of the node: \n";
@@ -433,6 +520,7 @@ int main() {
                 isQuit = false;
                 break;
             case 'F':
+
                 ll->deleteAtHead();
                 cout <<"Your new linked list after delete is: \n";
                 ll->printList();
@@ -440,6 +528,7 @@ int main() {
                 break;
                 break;
             case 'G':
+
                 ll->deleteAtTail();
                 cout <<"Your new linked list after delete is: \n";
                 ll->printList();
@@ -484,11 +573,16 @@ int main() {
                 break;
 
             case 'M':
-
+                ll->removeMultiplies();
+                ll->printList();
+                cout << endl;
                 break;
             case 'N':
-                    ll->evenOddSplit();
-
+                ll->evenOddSplit();
+                //test case to see if the list is destroy
+                ll->printList();
+                cout << "\nlist is destroyed after new two list are created" << endl;
+                isQuit = true;
                 break;
             case 'Q':
                 isQuit = true;
