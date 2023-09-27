@@ -12,7 +12,7 @@ public:
         this->name = name;
     }
 
-
+    //encapsulation to get the value and name of the node
     string getName()
     {
         return name;
