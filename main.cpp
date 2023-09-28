@@ -239,57 +239,73 @@ public:
         length--;
     }
 
-// Using Bubble sort
+// Using Bubble sort (redo)
     void sortList()
     {
-        Node<T> *NodeA= head;
-        Node<T> *NodeB = NULL;
-        int swapped;
-        do
-        {
-            swapped = 0;
-            NodeA = head;
+        Node<T> *currentNode= head;
+        Node<T> *temp;
+        int intValueA, intValueB;
 
-            while (NodeA->next != NodeB)
+        while(currentNode->next != nullptr)
+        {
+            intValueA = currentNode->value->getValue();
+            intValueB = currentNode->next->value->getValue();
+            //if next Node is greater than current Node
+            if(intValueA > intValueB)
             {
-                if (NodeA->value->getValue() > NodeA->next->value->getValue())
-                {
-                    swap(NodeA->value, NodeA->next->value);
-                    swapped = 1;
-                }
-                NodeA = NodeA->next;
+                temp = currentNode;
+                temp->next = currentNode->next->next;
+                temp->prev = currentNode->next;
+                //swap
+
+                currentNode->next = currentNode;
             }
-            NodeB = NodeA;
+            else
+            {
+                currentNode = currentNode -> next;
+            }
+
         }
-        while (swapped);
+
     }
 
     void removeMultiplies()
     {
-            Node<T> *NodeA;
-            Node<T> *NodeB;
-            Node<T> *temp;
+          Node<T> *currentNode = head;
+          Node<T> *found;
+          int intValA, intValB;
+          string strValA, strValB;
 
-            NodeA = head;
-            while(NodeA != nullptr && NodeA->next !=nullptr)
+        //iterate the node until end
+        while(currentNode->next != nullptr)
+        {
+            //get value at current node
+            intValA = currentNode->value->getValue();
+            strValA = currentNode->value->getName();
+            //get value of the next node
+            intValB = currentNode->next->value->getValue();
+            strValB = currentNode->next->value->getName();
+            //duplicates found
+            if (intValA == intValB && strValA == strValB)
             {
-                NodeB = NodeA;
-                while(NodeB->next != nullptr)
-                {
-                    if((NodeA->value->getValue() == NodeB->next->value->getValue()) &&(NodeA->value->getName() == NodeB->next->value->getName()))
-                    {
-                        temp = NodeB->next;
-                        NodeB->next = NodeB->next->next;
-                        delete temp;
-                        length--;
-                    }
-                    else
-                    {
-                        NodeB = NodeB->next;
-                    }
-                }
-                NodeA = NodeA->next;
+                //store the dup in found node
+                found = currentNode->next;
+                //update the link of the node
+                currentNode->next = currentNode->next->next;
+                currentNode->next->prev = currentNode;
+                //delete the found node
+                free(found);
+                //go to the next node
+                currentNode = currentNode->next;
             }
+            else
+            {
+                currentNode = currentNode->next;
+            }
+        }
+
+
+
 
     }
 
@@ -306,7 +322,7 @@ public:
         {
             Node<T> *tempNode = head;
 
-                while (tempNode != nullptr)
+                while (tempNode->next != nullptr)
                 {
                     //get values in check Node
                     intValA = checkNode->value->getValue();
@@ -328,8 +344,8 @@ public:
 
     void evenOddSplit()
     {
-        Node <T> *evenHead = head;
-        Node<T> *oddHead = head-> next;
+        Node <T> *evenHead = head; // start at index 0
+        Node<T> *oddHead = head-> next; // start at index 1
 
         DoubleLinkedList<Data> *evenList = new DoubleLinkedList<Data> (evenHead->value);
         DoubleLinkedList<Data> *oddList = new DoubleLinkedList<Data> (oddHead->value);
@@ -341,8 +357,8 @@ public:
             //when the list hit the node near end
             if(evenHead->next == nullptr)
             {
+                //add the last node then break
                 evenList->append(evenHead->value);
-
                 break;
             }
             else
@@ -357,7 +373,6 @@ public:
             if(oddHead -> next == nullptr)
             {
                 oddList->append(oddHead->value);
-
                 break;
             }
             else
@@ -374,6 +389,8 @@ public:
         evenList->printList();
         destroyList();
     }
+
+
     void destroyList()
     {
         head = nullptr;
@@ -439,9 +456,6 @@ int main() {
     bool isQuit = false;
    // Calling operations on Linked List
     DoubleLinkedList<Data> *ll;
-
-
-    // display menu
 
 
     do {
