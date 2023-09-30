@@ -1,3 +1,11 @@
+/* Double Linked List Template
+ * Author:
+ * Prof. Fnu Manju Muralidharan Priya & Dat  Truong
+ * CS 210
+ *
+ * */
+
+
 #include <iostream>
 
 using namespace std;
@@ -95,7 +103,7 @@ public:
     }
 
     int getLength() {
-        cout << "Length: " << length << endl;
+
         return length;
     }
 
@@ -121,6 +129,7 @@ public:
     // All insert methods
     // Insert at end
     void append(T *value) {
+
         Node<T> *newNode = new Node<T>(value);
         if (length == 0) {
             head = newNode;
@@ -221,7 +230,7 @@ public:
         delete temp;
         length--;
     }
-
+    //delete at index
     void deleteAtIndex(int index)
     {
         if (index < 0 || index >= length)
@@ -239,78 +248,126 @@ public:
         length--;
     }
 
-// Using Bubble sort (redo)
+
+
+    //Using Bubble sort
     void sortList()
     {
-        Node<T> *currentNode= head;
-        Node<T> *temp;
-        int intValueA, intValueB;
+        //Dealing with 3 nodes currentPrev -> current -> currentAfter
+        Node<T> *currentPrev;
+        Node<T> *currentAfter;
+        Node<T> *currentNode;
 
-        while(currentNode->next != nullptr)
+        //check if list is sorted
+        bool isSorted = false;
+
+        while (!isSorted)
         {
-            intValueA = currentNode->value->getValue();
-            intValueB = currentNode->next->value->getValue();
-            //if next Node is greater than current Node
-            if(intValueA > intValueB)
+            isSorted = true;
+            //Keep the list back to the head to sort
+            currentNode = head;
+            while (currentNode->next != nullptr)
             {
-                temp = currentNode;
-                temp->next = currentNode->next->next;
-                temp->prev = currentNode->next;
-                //swap
+                //Test case if the int value in currentNode is bigger
+                if (currentNode->value->getValue() > currentNode->next->value->getValue())
+                {
+                    //this point the prev node
+                    currentPrev = currentNode->prev;
+                    // this point to next node
+                    currentAfter = currentNode->next;
+                    //this is check if currentNode is head or not
+                    if (currentPrev != nullptr)
+                    {
+                        // currentNode is not at beginning of list
+                        currentPrev->next = currentAfter;
+                    }
+                    else
+                    {
+                        head = currentAfter;
+                    }
+                    //point currentNode->next to the one after next: c->n->n
+                    currentNode->next = currentAfter->next;
+                    //at the end of list
+                    if (currentAfter->next != nullptr)
+                    {
+                        currentAfter->next->prev = currentNode;
+                    }
+                    else
+                    {
+                        tail = currentNode;
+                    }
+                    //update the link after dealing with the head and tail;
+                    currentNode->prev = currentAfter;
+                    currentAfter->next = currentNode;
+                    currentAfter->prev = currentPrev;
 
-                currentNode->next = currentNode;
-            }
-            else
-            {
-                currentNode = currentNode -> next;
-            }
+                    //if the comparison is passed then list is still not sorted
+                    isSorted = false;
+                }
+                else
+                {
+                    currentNode = currentNode->next;  //moves through the list
+                }
 
+            }
         }
 
     }
 
     void removeMultiplies()
     {
-          Node<T> *currentNode = head;
+          Node<T> *currentNode;
+          Node<T> *checkNode;
           Node<T> *found;
           int intValA, intValB;
           string strValA, strValB;
 
-        //iterate the node until end
-        while(currentNode->next != nullptr)
-        {
-            //get value at current node
-            intValA = currentNode->value->getValue();
-            strValA = currentNode->value->getName();
-            //get value of the next node
-            intValB = currentNode->next->value->getValue();
-            strValB = currentNode->next->value->getName();
-            //duplicates found
-            if (intValA == intValB && strValA == strValB)
-            {
-                //store the dup in found node
-                found = currentNode->next;
-                //update the link of the node
-                currentNode->next = currentNode->next->next;
-                currentNode->next->prev = currentNode;
-                //delete the found node
-                free(found);
-                //go to the next node
-                currentNode = currentNode->next;
+          //did iterate the whole node the currentNode will iterate through out the list O(n^2)
+        for(currentNode = head; currentNode->next!= nullptr; currentNode = currentNode->next) {
+            //set the checkNode have same value as the head
+            checkNode = currentNode;
+            //iterate the node until end
+            while (checkNode->next != nullptr) {
+                //get value at current node
+                intValA = currentNode->value->getValue();
+                strValA = currentNode->value->getName();
+                //get value of the next node
+                intValB = checkNode->next->value->getValue();
+                strValB = checkNode->next->value->getName();
+                //duplicates found
+                if (intValA == intValB && strValA == strValB)
+                {
+                    //store the dup in found node
+                   found = checkNode->next;
+                    //update the link of the node
+                    if(checkNode->next->next == nullptr)
+                    {
+                        checkNode->prev->next = tail;
+                        break;
+                    }
+                    else
+                    {
+                        checkNode->next = checkNode->next->next;
+                    }
+                    //delete the found node
+                    free(found);
+                }
+                    //if the value is not duplicate move on
+                else
+                {
+                    checkNode = checkNode->next;
+                }
             }
-            else
-            {
-                currentNode = currentNode->next;
-            }
-        }
 
+        }
 
 
 
     }
 
+
     int countMultiples(T *value) {
-        int num = 0;
+        int count = 0;
         int intValA, intValB;
         string strValA, strValB;
         Node<T> *checkNode = new Node<T> (value);// node hold value to check
@@ -320,35 +377,37 @@ public:
         }
         else
         {
-            Node<T> *tempNode = head;
-
-                while (tempNode->next != nullptr)
+            //set the current Node at the head
+            Node<T> *currentNode = head;
+                //iterate through
+                do
                 {
                     //get values in check Node
                     intValA = checkNode->value->getValue();
                     strValA = checkNode ->value ->getName();
                     //get value in temp Node to compare
-                    intValB = tempNode->value->getValue();
-                    strValB = tempNode -> value -> getName();
-
+                    intValB = currentNode->value->getValue();
+                    strValB = currentNode -> value -> getName();
                     if((intValA == intValB) && (strValA == strValB))
                     {
-                        num +=1;
+                        count ++;
                     }
-                    tempNode = tempNode->next; // go to next value
-                }
+                    currentNode = currentNode->next; // go to next value
+                }while (currentNode != nullptr);
         }
-        return num;
+        return count;
     }
 
 
     void evenOddSplit()
     {
+
         Node <T> *evenHead = head; // start at index 0
         Node<T> *oddHead = head-> next; // start at index 1
-
+        //create 2 linked list to store the nodes
         DoubleLinkedList<Data> *evenList = new DoubleLinkedList<Data> (evenHead->value);
         DoubleLinkedList<Data> *oddList = new DoubleLinkedList<Data> (oddHead->value);
+        //loop through the list
         while(evenHead->next != nullptr || oddHead ->next != nullptr)
         {
             // evenHead start at node 0  and this will go to node 2 by skipping 1
@@ -364,12 +423,12 @@ public:
             else
             {
                 evenList->append(evenHead->value);
-
             }
 
             //this start from node [1] and go to node [3]
             oddHead->next = oddHead->next->next;
             oddHead = oddHead ->next;
+            //when the list hit the node near end
             if(oddHead -> next == nullptr)
             {
                 oddList->append(oddHead->value);
@@ -421,7 +480,7 @@ public:
 void menuDisplay()
 {
     //Display Menu
-    cout <<"\n=========================================\n";
+    cout <<"=========================================";
     cout << "\nWelcome to Dat's Doubly linked list menu!" << endl;
     cout << "Please read the option: " << endl;
     cout << "a. Create a list" << endl;
@@ -452,18 +511,19 @@ int main() {
     string name;
     int index;
     int count =0;
-    Data *temp;
     bool isQuit = false;
-   // Calling operations on Linked List
-    DoubleLinkedList<Data> *ll;
 
+   // Create a constructor for used in the menu;
+    DoubleLinkedList<Data> *ll;
+    Data *temp;
+    int length;
 
     do {
         menuDisplay();
         cin >> choice;
-        while((choice > 'z' ) || (choice < 'a' ))
+        while((choice > 'z' && choice >'z') || (choice < 'a' &&choice <'A'))
         {
-            cout <<"That is invalid input.\nPlease enter your choice:\n";
+            cout <<"That is invalid input.\nPlease enter your character choice:\nPress any character other than those in the menu to quit";
             cin >> choice;
         }
         cout <<"=========================================\n";
@@ -478,6 +538,7 @@ int main() {
                 ll = new DoubleLinkedList(temp);
                 cout <<"Your new linked list is: \n";
                 ll->printList();
+                cout << endl;
                 isQuit = false;
                 break;
 
@@ -488,117 +549,185 @@ int main() {
                 cout << "\nThe list is destroyed!\n";
                 isQuit = true;
                 break;
+
             case 'C':
-
-
                 cout << "Please enter the string value of the node: \n";
                 cin >> name;
                 cout << "Please enter the integer value of the node: \n";
                 cin >> value;
                 temp = new Data(value, name);
+                cout <<"This is the list before add:\n";
+                ll->printList();
                 ll->prepend(temp);
+                cout <<"\nYour new linked list after adding new node is: \n";
                 ll->printList();
+                cout << endl;
                 isQuit = false;
                 break;
-            case 'D':
 
+            case 'D':
                 cout << "Please enter the string value of the node: \n";
                 cin >> name;
                 cout << "Please enter the integer value of the node: \n";
                 cin >> value;
                 temp = new Data(value, name);
-                ll->append(temp);
-                cout <<"Your new linked list is: \n";
+                cout <<"This is the list before add:\n";
                 ll->printList();
+                ll->append(temp);
+                cout <<"\nYour new linked list after adding new node is: \n";
+                ll->printList();
+                cout << endl;
                 isQuit = false;
                 break;
-            case 'E':
 
+            case 'E':
                 cout << "Please enter the string value of the node: \n";
                 cin >> name;
                 cout << "Please enter the integer value of the node: \n";
                 cin >> value;
+                length = ll->getLength();
+                cout << "Length of the list is: "<< length << endl;
                 cout << "Please enter the index you want to insert at: \n";
                 cin >> index;
-                cout <<"This is the list before add new node: \n";
-                ll->printList();
-                while(index > ll->getLength()|| index < 0)
+
+                while(index > length|| index < 0)
                 {
                     cout << "Please enter correct index you want to insert at: \n";
                     cin >> index;
                 }
                 temp = new Data(value, name);
+                cout <<"This is the list before add:\n";
+                ll->printList();
                 ll->insert(index,temp);
-                cout <<"Your new linked list after adding new node is: \n";
+                cout <<"\nYour new linked list after adding new node is: \n";
                 ll->printList();
+                cout << endl;
                 isQuit = false;
                 break;
+
             case 'F':
-
+                cout <<"This is the list before you delete:\n";
+                ll->printList();
                 ll->deleteAtHead();
-                cout <<"Your new linked list after delete is: \n";
-                ll->printList();
+                if(ll->getLength() > 0)
+                {
+                    cout <<"\nYour new linked list after delete is: \n";
+                    ll->printList();
+                }
+                else
+                {
+                    cout << "\nThere is no more nodes to delete.";
+                    ll->destroyList();
+                    isQuit = true;
+                    break;
+                }
+                cout << endl;
                 isQuit = false;
                 break;
-                break;
-            case 'G':
 
-                ll->deleteAtTail();
-                cout <<"Your new linked list after delete is: \n";
+            case 'G':
+                cout <<"This is the list before you delete:\n";
                 ll->printList();
+                ll->deleteAtTail();
+                if(ll->getLength() > 0)
+                {
+                    cout <<"\nYour new linked list after delete is: \n";
+                    ll->printList();
+                }
+                else
+                {
+                    cout << "\nThere is no more nodes to delete.";
+                    ll->destroyList();
+                    isQuit = true;
+                    break;
+                }
+                cout << endl;
                 isQuit = false;
                 break;
+
             case 'H':
+
+
                 cout <<"Please enter the the index you want to delete at:\n";
                 cin >> index;
-                while(index > ll->getLength()||index < 0)
+                while(index >= ll->getLength()||index < 0)
                 {
-                    cout << "Please enter correct index you want to insert at: \n";
+                    cout << "Please enter correct index you want to delete at: \n";
                     cin >> index;
                 }
-                ll->deleteAtIndex(index);
-                cout <<"Your new linked list after delete is: \n";
+                cout <<"This is the list before you delete:\n";
                 ll->printList();
+                ll->deleteAtIndex(index);
+                if(ll->getLength() > 0)
+                {
+                    cout <<"\nYour new linked list after delete is: \n";
+                    ll->printList();
+                }
+                else
+                {
+                    cout << "\nThere is no more nodes to delete.";
+                    ll->destroyList();
+                    isQuit = true;
+                    break;
+                }
+                cout << endl;
                 isQuit = false;
                 break;
+
             case 'J':
+                cout<< "This is your list before reverse:\n";
+                ll->printList();
                 ll->reverseList();
                 cout <<"Your new linked list after reverse is: \n";
                 ll->printList();
+                cout << endl;
                 isQuit = false;
                 break;
+
             case 'K':
                 ll->sortList();
                 cout <<"Your new linked list after sort is: \n";
                 ll->printList();
+                cout << endl;
                 isQuit = false;
                 break;
-            case 'L':
 
-                cout <<"Enter the integer value: \n";
-                cin >> value;
+            case 'L':
                 cout <<"Enter the string value:\n";
                 cin >> name;
+                cout <<"Enter the integer value: \n";
+                cin >> value;
                 temp = new Data(value,name);
                 count = ll->countMultiples(temp);
                 ll->printList();
-                cout << "\nThe value of [" << value << "," << name << "] appeared " << count  << " times.\n";
+                cout << "\nThe value of [" << value << ", " << name << "] appeared " << count  << " times.\n";
+                cout << endl;
                 isQuit = false;
                 break;
 
             case 'M':
+                cout <<"This is the list before remove Duplicates:\n";
+                ll->printList();
                 ll->removeMultiplies();
+                cout << endl;
+                cout <<"This is the list after remove Duplicates:\n";
                 ll->printList();
                 cout << endl;
+                isQuit = false;
                 break;
+
             case 'N':
+                cout <<"This is the list before the split:\n";
+                ll->printList();
+                cout << endl;
                 ll->evenOddSplit();
                 //test case to see if the list is destroy
                 ll->printList();
                 cout << "\nlist is destroyed after new two list are created" << endl;
                 isQuit = true;
                 break;
-            case 'Q':
+
+            default:
                 isQuit = true;
                 break;
         }
