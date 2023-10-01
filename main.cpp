@@ -81,6 +81,7 @@ public:
             temp->print();
             temp = temp->next;
         }
+
     }
 
     // get and set
@@ -216,7 +217,8 @@ public:
         {
             head= nullptr;
             tail = nullptr;
-        }else
+        }
+        else
         {
             Node<T> *pre = head;
             while(temp->next)
@@ -224,6 +226,7 @@ public:
                 pre = temp;
                 temp = temp->next;
             }
+            tail->prev = pre;
             tail = pre;
             tail->next = nullptr;
         }
@@ -314,71 +317,62 @@ public:
 
     }
 
-    void removeMultiplies()
-    {
-          Node<T> *currentNode;
-          Node<T> *checkNode;
-          Node<T> *found;
-          int intValA, intValB;
-          string strValA, strValB;
-
-          //did iterate the whole node the currentNode will iterate through out the list O(n^2)
-        for(currentNode = head; currentNode->next!= nullptr; currentNode = currentNode->next) {
-            //set the checkNode have same value as the head
-            checkNode = currentNode;
-            //iterate the node until end
-            while (checkNode->next != nullptr) {
-                //get value at current node
+    void removeMultiplies() {
+        int intValA, intValB;
+        string strValA, strValB;
+        Node<T> *currentNode = nullptr;
+        Node<T> *checkNode = nullptr;
+        Node<T> *found = nullptr;
+        //iterate the whole list
+        for (currentNode = head; currentNode != nullptr; currentNode = currentNode->next) {
+            // Go to the next Node after current Node
+            checkNode = currentNode->next;
+            while (checkNode != nullptr) {
+                //get value at to check
                 intValA = currentNode->value->getValue();
                 strValA = currentNode->value->getName();
-                //get value of the next node
-                intValB = checkNode->next->value->getValue();
-                strValB = checkNode->next->value->getName();
-                //duplicates found
-                if (intValA == intValB && strValA == strValB)
-                {
-                    //store the dup in found node
-                   found = checkNode->next;
-                    //update the link of the node
-                    if(checkNode->next->next == nullptr)
-                    {
-                        checkNode->prev->next = tail;
-                        break;
-                    }
-                    else
-                    {
-                        checkNode->next = checkNode->next->next;
-                    }
-                    //delete the found node
-                    free(found);
+                intValB = checkNode->value->getValue();
+                strValB = checkNode->value->getName();
+                // Check node is duplicate or not
+                if (intValA == intValB && strValA == strValB) {
+                    found = checkNode;
                 }
-                    //if the value is not duplicate move on
-                else
-                {
-                    checkNode = checkNode->next;
+                // Go to the next Node
+                checkNode = checkNode->next;
+
+                if (found != nullptr) {
+                    // When found the delete node we need to check these condition
+                    if (found->prev != nullptr) {
+                        found->prev->next = checkNode;
+                    }
+                    //this check if it is at the end of list
+                    if (checkNode != nullptr) {
+                        checkNode->prev = found->prev;
+                    }
+                    //this check if found is the tail
+                    if (found == tail) {
+                        // When remove last node
+                        tail = found->prev;
+                    }
+                    //delete the dup by setting it to nullptr;
+                    found->prev = nullptr;
+                    found->next = nullptr;
+                    found = nullptr;
                 }
             }
-
         }
-
-
-
     }
 
 
     int countMultiples(T *value) {
+        //Setting variables
         int count = 0;
         int intValA, intValB;
         string strValA, strValB;
         Node<T> *checkNode = new Node<T> (value);// node hold value to check
-        if (head == nullptr)
-        {
-            cout << "\nEmpty List\n";
-        }
-        else
-        {
-            //set the current Node at the head
-            Node<T> *currentNode = head;
+
+        //set the current Node at the head
+        Node<T> *currentNode = head;
                 //iterate through
                 do
                 {
@@ -394,7 +388,6 @@ public:
                     }
                     currentNode = currentNode->next; // go to next value
                 }while (currentNode != nullptr);
-        }
         return count;
     }
 
@@ -439,8 +432,6 @@ public:
                 oddList->append(oddHead->value);
             }
         }
-
-
         cout << "Odd List: \n";
         oddList->printList();
         cout << endl;
@@ -448,7 +439,6 @@ public:
         evenList->printList();
         destroyList();
     }
-
 
     void destroyList()
     {
@@ -474,9 +464,9 @@ public:
             head = temp->prev;
         }
     }
-};
+}; // end of linkedlist
 
-
+//helper function to disply menu
 void menuDisplay()
 {
     //Display Menu
@@ -685,6 +675,9 @@ int main() {
                 break;
 
             case 'K':
+                cout <<"Your list before sorting is:\n";
+                ll->printList();
+                cout <<endl;
                 ll->sortList();
                 cout <<"Your new linked list after sort is: \n";
                 ll->printList();
