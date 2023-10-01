@@ -260,6 +260,7 @@ public:
         Node<T> *currentPrev;
         Node<T> *currentAfter;
         Node<T> *currentNode;
+        int intValA, intValB;
 
         //check if list is sorted
         bool isSorted = false;
@@ -271,8 +272,12 @@ public:
             currentNode = head;
             while (currentNode->next != nullptr)
             {
+                //get the value to compare
+                 intValA= currentNode->value->getValue();
+                 intValB = currentNode->next->value->getValue();
+
                 //Test case if the int value in currentNode is bigger
-                if (currentNode->value->getValue() > currentNode->next->value->getValue())
+                if (intValA > intValB)
                 {
                     //this point the prev node
                     currentPrev = currentNode->prev;
@@ -286,6 +291,7 @@ public:
                     }
                     else
                     {
+                        //if currentNode is the head then swap it with the nextNode after it
                         head = currentAfter;
                     }
                     //point currentNode->next to the one after next: c->n->n
@@ -303,7 +309,6 @@ public:
                     currentNode->prev = currentAfter;
                     currentAfter->next = currentNode;
                     currentAfter->prev = currentPrev;
-
                     //if the comparison is passed then list is still not sorted
                     isSorted = false;
                 }
@@ -317,6 +322,7 @@ public:
 
     }
 
+    //Only remove the duplicates while keep original order
     void removeMultiplies() {
         int intValA, intValB;
         string strValA, strValB;
@@ -328,7 +334,7 @@ public:
             // Go to the next Node after current Node
             checkNode = currentNode->next;
             while (checkNode != nullptr) {
-                //get value at to check
+                //get value at the current Node and check Node to check
                 intValA = currentNode->value->getValue();
                 strValA = currentNode->value->getName();
                 intValB = checkNode->value->getValue();
@@ -363,7 +369,7 @@ public:
         }
     }
 
-
+    //Count the multiples
     int countMultiples(T *value) {
         //Setting variables
         int count = 0;
@@ -388,10 +394,12 @@ public:
                     }
                     currentNode = currentNode->next; // go to next value
                 }while (currentNode != nullptr);
+                //free the new creating node
+                free(checkNode);
         return count;
     }
 
-
+    //Create 2 list that will hold the value for even and odd node
     void evenOddSplit()
     {
 
@@ -405,6 +413,7 @@ public:
         {
             // evenHead start at node 0  and this will go to node 2 by skipping 1
             evenHead->next = evenHead->next->next;
+            //update the node
             evenHead = evenHead->next;
             //when the list hit the node near end
             if(evenHead->next == nullptr)
@@ -453,16 +462,16 @@ public:
         Node<T> *current = head;
         while(current != nullptr)
         {
-            temp = current->prev;
-            current->prev = current->next;
-            current->next = temp;
+            temp = current->next;
+            current->next = current->prev;
+            current->prev = temp;
             current= current->prev;
         }
+        //swapping the position of head and tail
+        temp = head;
+        head = tail;
+        tail = temp;
 
-        if(temp != nullptr)
-        {
-            head = temp->prev;
-        }
     }
 }; // end of linkedlist
 
@@ -667,6 +676,7 @@ int main() {
             case 'J':
                 cout<< "This is your list before reverse:\n";
                 ll->printList();
+                cout<<endl;
                 ll->reverseList();
                 cout <<"Your new linked list after reverse is: \n";
                 ll->printList();
