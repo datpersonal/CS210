@@ -534,7 +534,7 @@ int main() {
                 cin >> value;
                 temp = new Data(value, name);
                 // Creating Linked List
-                ll = new DoubleLinkedList(temp);
+                ll = new DoubleLinkedList<Data>(temp);
                 cout <<"Your new linked list is: \n";
                 ll->printList();
                 cout << endl;
